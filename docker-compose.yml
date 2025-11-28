@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: ai-ba-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-456123}
+      POSTGRES_DB: aiba
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./ai-ba-backend
+      dockerfile: Dockerfile
+    container_name: ai-ba-backend
+    depends_on:
+      - postgres
+    environment:
+      - PORT=9000
+      - DB_DSN=postgres://postgres:${DB_PASSWORD:-456123}@postgres:5432/aiba?sslmode=disable
+      # Add other environment variables here if needed
+      - JWT_SECRET=a-string-secret-at-least-256-bits-long
+      - AI_KEY=AIzaSyDWTH_Q_gEUoCdgFHljLtIR9AXpVFkMIV4
+    ports:
+      - "9000:9000"
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./ai_analysc
+      dockerfile: Dockerfile
+    container_name: ai-ba-frontend
+    depends_on:
+      - backend
+    ports:
+      - "3001:80"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
