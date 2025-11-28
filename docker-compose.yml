@@ -24,10 +24,10 @@ services:
       - postgres
     environment:
       - PORT=9000
-      - DB_DSN=postgres://postgres:${DB_PASSWORD:-456123}@postgres:5432/aiba?sslmode=disable
+      - DB_DSN=
       # Add other environment variables here if needed
-      - JWT_SECRET=a-string-secret-at-least-256-bits-long
-      - AI_KEY=AIzaSyAUqcXd-CaOhe0D-wF7E65vUMTNi5Ay6sc
+      - JWT_SECRET=
+      - AI_KEY=
     ports:
       - "9000:9000"
     networks:
